@@ -1,0 +1,27 @@
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - '0.0.0.0:27017:27017'
+    networks:
+      - mongonetwork
+  app:
+    build: .
+    ports:
+      - '8080:8080'
+      - '3000:3000'
+   
+    volumes:
+      - './:/app'
+    networks:
+      - mongonetwork 
+  
+volumes:
+  appvol:
+   external: true      
+networks:
+  mongonetwork:
+    name: mongonetwork     
+
+
+   
