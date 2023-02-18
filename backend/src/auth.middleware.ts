@@ -5,14 +5,16 @@ import { UsersService } from './users.service';
 export class AuthMiddleware implements NestMiddleware {
   constructor(public service: UsersService) { }
   async use(req: Request, res: Response, next: NextFunction) {
-    // console.log('req: ', req);
+    const authorization = req.header('authorization')
+   
+ 
 try {
-  let valid = await this.service.findById(req?.body?.ID || req?.query?.ID)
+  let valid = await this.service.findById(authorization).catch(()=>false)
   if (valid) { next() } else {
-    throw new Error("Not permission");
+    throw new Error("Access deneid");
   }
 } catch (error) {
-  throw new HttpException({ msg: error.message, status: HttpStatus.BAD_REQUEST }, HttpStatus.BAD_REQUEST);
+  throw new HttpException({ msg: error.message, status: HttpStatus.UNAUTHORIZED }, HttpStatus.UNAUTHORIZED);
 }
   
 

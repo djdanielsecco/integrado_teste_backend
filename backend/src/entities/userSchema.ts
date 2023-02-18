@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import {HydratedDocument, Document, Schema as MongooseSchema } from 'mongoose';
+import {HydratedDocument } from 'mongoose';
 export type UsersDocument = HydratedDocument<Users>;
 @Schema({collection:"users", timestamps: true })
 export class Users  {

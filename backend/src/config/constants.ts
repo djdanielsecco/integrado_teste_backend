@@ -1,4 +1,4 @@
-export const paises = [
+export const country = [
     "argentina",
     "brasil",
     "chile",

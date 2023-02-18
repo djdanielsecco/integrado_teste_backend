@@ -21,7 +21,7 @@ export class UsersService {
         const ans = await bcrypt.compare(key, hash);
         return ans;
     }
-    async signUp(user: UsersDocument) {
+    async signUp(user: Users) {
         // let lastSize = await Clients.count({})
         const keyCrypt = await this.encrypt(user.password);
         const newUser = {
@@ -53,10 +53,10 @@ export class UsersService {
                 }
             }
             else {
-                throw new Error("Not registry");
+                throw new Error("Password error");
             }
-        } catch {
-            throw new Error("Error to registry");
+        } catch (e){
+            return e
         }
     }
     async changePassword(email: string, password: string, new_password: string) {
