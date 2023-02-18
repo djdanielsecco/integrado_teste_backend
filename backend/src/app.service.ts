@@ -4,7 +4,11 @@ import { AxiosResponse } from 'axios';
 import { Cron } from '@nestjs/schedule';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { University, UniversityDocument, UniversitySchema } from './entities/UniversitySchema';
+import {
+  University,
+  UniversityDocument,
+  UniversitySchema,
+} from './entities/UniversitySchema';
 import { country } from './config/constants';
 @Injectable()
 export class AppService {
@@ -13,6 +17,4 @@ export class AppService {
     @InjectModel(University.name)
     public universityModel: Model<UniversityDocument>,
   ) {}
-
-
 }

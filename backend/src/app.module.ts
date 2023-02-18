@@ -27,7 +27,10 @@ import { AuthMiddleware } from './auth.middleware';
     }),
 
     ConfigModule,
-    MongooseModule.forFeature([{ name: University.name, schema: UniversitySchema }, { name: Users.name, schema: UsersSchema }]),
+    MongooseModule.forFeature([
+      { name: University.name, schema: UniversitySchema },
+      { name: Users.name, schema: UsersSchema },
+    ]),
     ScheduleModule.forRoot(),
     HttpModule.register({
       timeout: 360000,
@@ -38,18 +41,20 @@ import { AuthMiddleware } from './auth.middleware';
       },
     }),
   ],
-  controllers: [
-    NoAuthController, AppController],
+  controllers: [NoAuthController, AppController],
   providers: [
     JobService,
-    AppService, UniversityService, University, UsersService, HttpModule,Users],
+    AppService,
+    UniversityService,
+    University,
+    UsersService,
+    HttpModule,
+    Users,
+  ],
   // exports: [HttpModule],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddleware)
-      .forRoutes('api');
+    consumer.apply(AuthMiddleware).forRoutes('api');
   }
-
 }

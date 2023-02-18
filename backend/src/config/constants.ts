@@ -1,10 +1,10 @@
 export const country = [
-    "argentina",
-    "brasil",
-    "chile",
-    "colombia",
-    "paraguai",
-    "peru",
-    "suriname",
-    "uruguay"
-    ]
+  'argentina',
+  'brasil',
+  'chile',
+  'colombia',
+  'paraguai',
+  'peru',
+  'suriname',
+  'uruguay',
+];
