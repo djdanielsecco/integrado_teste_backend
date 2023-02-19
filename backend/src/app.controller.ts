@@ -29,7 +29,9 @@ export class AppController {
   constructor(
     private readonly appService: UniversityService,
     private readonly userService: UsersService,
+
   ) {}
+
   @Put('/change_password')
   @ApiBody({ type: ChangePass_Type })
   async changePwd(
