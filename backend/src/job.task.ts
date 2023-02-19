@@ -22,10 +22,12 @@ export class JobService {
   start = async function () {
     try {
       for await (const i of country) {
+        console.log('i: ', i);
         const url = `http://universities.hipolabs.com/search?country=${i}`;
         await this.resolver(this.httpService.axiosRef.get(url), 1000).then(
           async (res: AxiosResponse) => {
             const parse: Array<any> = (await res?.data) ?? [];
+            console.log('parse: ', parse.length);
             const COLLECTION = this.universityModel.db.model(
               `${i}`,
               UniversitySchema,
@@ -36,9 +38,10 @@ export class JobService {
               await COLLECTION.createCollection();
               await COLLECTION.insertMany(parse);
             } else {
-              if ((await COLLECTION.countDocuments()) > 0) {
+              if (((await COLLECTION.countDocuments()) != parse.length) && parse.length > 0 ) {
                 for await (const x of parse) {
-                  await COLLECTION.findOneAndUpdate({ ...x }, x, {
+                  console.log('x: ', x);
+                  await COLLECTION.findOneAndUpdate({ name:x.name,country:x.country,"state-province":x["state-province"] }, x, {
                     upsert: true,
                     strict: false,
                   });
@@ -58,6 +61,8 @@ export class JobService {
     timeZone: 'America/Sao_Paulo',
   })
   async handleCron() {
+    console.log("vai rolar");
     await this.start();
+    console.log("rolou");
   }
 }

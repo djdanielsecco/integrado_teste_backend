@@ -2,10 +2,11 @@
 https://docs.nestjs.com/providers#services
 */
 import * as bcrypt from 'bcryptjs';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Users, UsersDocument } from './entities/userSchema';
+import { Users, UsersDocument } from './entities/UsersSchema';
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -34,7 +35,10 @@ export class UsersService {
       const { name, _id, email } = response?.[0];
       return { name, _id, email };
     } catch {
-      throw new Error('User exists');
+      throw new HttpException(
+        { message: "User exists", status: HttpStatus.NOT_ACCEPTABLE },
+        HttpStatus.NOT_ACCEPTABLE,
+      );
     }
   }
   async verifyLogin(email: string, password: string) {
@@ -42,22 +46,27 @@ export class UsersService {
       const user: UsersDocument = await this.userModel.findOne({
         email: `${email}`,
       });
+      console.log('user: ', user);
       const Email: string = user?.email;
       const Password: string = user?.password;
       const Name: string = user?.name;
       const ID: string = user?._id.valueOf() as string;
       const verify = await this.compare(password, Password);
-      if (verify) {
+      console.log('verify: ', verify);
+      if (!!verify) {
         return {
           Name,
           Email,
           ID,
         };
       } else {
-        throw new Error('Password error');
+        throw new Error("Login fail");
       }
-    } catch (e) {
-      return e;
+    } catch (error) {
+      throw new HttpException(
+        { message: error.message, status: HttpStatus.UNAUTHORIZED },
+        HttpStatus.UNAUTHORIZED,
+      );
     }
   }
   async changePassword(email: string, password: string, new_password: string) {
@@ -84,10 +93,13 @@ export class UsersService {
           throw new Error('Error to update');
         }
       } else {
-        throw new Error('Error to update');
+        throw new Error('Wrong password');
       }
-    } catch {
-      throw new Error('Error to update');
+    } catch(error) {
+      throw new HttpException(
+        { message: error.message, status: HttpStatus.NOT_ACCEPTABLE },
+        HttpStatus.NOT_ACCEPTABLE,
+      );
     }
   }
 

@@ -10,6 +10,7 @@ import {
   UniversityDocument,
   UniversitySchema,
 } from './entities/UniversitySchema';
+import { ObjectId } from 'mongodb'
 @Injectable()
 export class UniversityService {
   /**
@@ -18,7 +19,7 @@ export class UniversityService {
   constructor(
     @InjectModel(University.name)
     public universityModel: Model<UniversityDocument>,
-  ) {}
+  ) { }
   async list(query: { country: string; page: number }) {
     try {
       if (!query?.page) {
@@ -26,16 +27,15 @@ export class UniversityService {
       }
       const limit = 20;
       const isCountry = country?.includes(query?.country);
-      const firstCollection = isCountry ? query?.country : country[0];
+      const firstCollection = isCountry ? query?.country : country.at(0);
       const COLLECTION = this.universityModel.db.model(
-        firstCollection,
+        "ListModel",
         UniversitySchema,
         firstCollection,
       );
       if (isCountry) {
         const Total = await COLLECTION.countDocuments();
         const queryCountry = query?.country;
-        console.log('queryCountry: ', queryCountry);
         const expression = new RegExp(queryCountry, 'i');
         const documents = await COLLECTION.find(
           { country: { $regex: expression } },
@@ -43,6 +43,7 @@ export class UniversityService {
         )
           .limit(limit)
           .skip(limit * (+query?.page - 1));
+        if (+documents?.length == 0) { throw new Error('Not found'); }
         return {
           data: { Total, pages: Math.ceil(Total / limit), page: +query?.page },
           documents,
@@ -60,40 +61,53 @@ export class UniversityService {
           ...unions,
           { $count: 'Total' },
         ]);
+        if (+fullDocuments?.length == 0) { throw new Error('Not found'); }
         return {
           data: {
-            ...data?.[0],
-            pages: Math.ceil(data?.[0].Total / limit),
+            ...data?.at(0),
+            pages: Math.ceil(data?.at(0).Total / limit),
             page: +query?.page,
           },
           documents: fullDocuments,
         };
       }
-    } catch {
-      throw new Error('Not permited');
+    } catch (error) {
+      throw new HttpException(
+        { message: error.message, status: HttpStatus.NOT_FOUND },
+        HttpStatus.NOT_FOUND,
+      );
     }
   }
-
-
-  async getById(id: string) {
-    console.log('id2: ', id);
+  async getById(id: string): Promise<University> {
     try {
-      const firstCollection = country[0];
+      const firstCollection = country.at(0);
       const COLLECTION = this.universityModel.db.model(
-        firstCollection,
+        "GetModel",
         UniversitySchema,
         firstCollection,
       );
       const toAggregate = country.filter((i) => i !== firstCollection);
       const unions = toAggregate.map((e) => ({ $unionWith: `${e}` }));
-      const document = await COLLECTION.aggregate([
+      const document: Array<University> = await COLLECTION.aggregate([
         ...unions,
-        { $project: { _id: 1, name: 1, country: 1, 'state-province': 1 } },
+        // { $project: { _id: 1, name: 1, country: 1, 'state-province': 1 } },
+        { $project: { "__v": 0 } },
         { $match: { $expr: { $eq: ['$_id', { $toObjectId: id }] } } },
       ]);
-      return { document };
+      console.log('document: ', document);
+    if( !!document?.at(0)){
+      return  document.at(0)
+    }else{
+      throw new Error(`Not found document _id:${id}`);
+      
+    }
+      
     } catch (error) {
-      throw new Error('Not find');
+
+      throw new HttpException(
+        { message: error.message, status: HttpStatus.NOT_FOUND },
+        HttpStatus.NOT_FOUND,
+      );
     }
   }
   async create(university: University) {
@@ -103,13 +117,13 @@ export class UniversityService {
       }
       const newEntrie = {
         ...university,
+        country:university.country.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()),
         'state-province': university?.['state-province'] ?? null,
         alpha_two_code: university.alpha_two_code.toUpperCase(),
       };
       const firstCollection = newEntrie?.country?.toLowerCase();
-      console.log('firstCollection: ', firstCollection);
       const COLLECTION = this.universityModel.db.model(
-        firstCollection,
+        'CreateModel',
         UniversitySchema,
         firstCollection,
       );
@@ -128,7 +142,6 @@ export class UniversityService {
           }
         })
         .catch(() => false);
-      console.log('check: ', check);
       if (!check) {
         await COLLECTION.insertMany(newEntrie);
         return { message: 'New documment created' };
@@ -137,8 +150,43 @@ export class UniversityService {
       }
     } catch (error) {
       throw new HttpException(
-        { msg: error.message, status: HttpStatus.AMBIGUOUS },
+        { message: error.message, status: HttpStatus.AMBIGUOUS },
         HttpStatus.AMBIGUOUS,
+      );
+    }
+  }
+  async update(id: string, params: { name: string, web_pages: string[], domais: string[] }) {
+    try {
+      const doc = await this.getById(id)
+      try {
+        let o_Id = new ObjectId(id)
+        let collection = doc.country.toLowerCase()
+        const COLLECTION = this.universityModel.db.model(
+          'UpdateModel',
+          UniversitySchema,
+          collection,
+        );
+       await COLLECTION.updateOne({_id:o_Id},{...params})
+      } catch (e) {
+        throw new Error(e.message);
+      }
+      return { message: "document updated" }
+    } catch (error) {
+      throw new HttpException(
+        { message:error.message, status: HttpStatus.NOT_FOUND },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
+  async delete(id: string) {
+    try {
+      const doc = await this.getById(id)
+      await this.universityModel.db.collection(doc.country.toLowerCase()).deleteOne(doc)
+      return { message: "document deleted" }
+    } catch (error) {
+      throw new HttpException(
+        { message: "Not Found", status: HttpStatus.NOT_FOUND },
+        HttpStatus.NOT_FOUND,
       );
     }
   }

@@ -10,7 +10,8 @@ import { UsersService } from './users.service';
 export class AuthMiddleware implements NestMiddleware {
   constructor(public service: UsersService) {}
   async use(req: Request, res: Response, next: NextFunction) {
-    const authorization = req.header('authorization');
+    const authorization = req.header('x-authorization');
+    console.log('req: ', req.headers);
 
     try {
       const valid = await this.service
@@ -23,7 +24,7 @@ export class AuthMiddleware implements NestMiddleware {
       }
     } catch (error) {
       throw new HttpException(
-        { msg: error.message, status: HttpStatus.UNAUTHORIZED },
+        { message: error.message, status: HttpStatus.UNAUTHORIZED },
         HttpStatus.UNAUTHORIZED,
       );
     }
