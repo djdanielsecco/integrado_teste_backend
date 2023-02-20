@@ -5,23 +5,54 @@ services:
       - '0.0.0.0:27017:27017'
     networks:
       - mongonetwork
-  app:
-    build: .
-    ports:
-      - '8080:8080'
-      - '3000:3000'
-   
-    volumes:
-      - './:/app'
-    networks:
-      - mongonetwork 
-  
+  dev:
+   container_name: nestjs_api_dev
+   image: nestjs-api-dev:1.0.0
+   build:
+       context: .
+       target: development
+       dockerfile: ./Dockerfile
+   working_dir: /usr/src/app/backend   
+   command:  npm run start:debug
+   ports:
+       - 3000:3000
+     
+   networks:
+       - mongonetwork 
+   volumes:
+       - .:/usr/src/app
+       - /usr/src/app/backend/node_modules
+   restart: unless-stopped
+   depends_on:
+      - mongodb
+  prod:
+   container_name: nestjs_api_prod
+   image: nestjs-api-prod:1.0.0
+   build:
+       context: .
+       target: production
+       dockerfile: ./Dockerfile
+   working_dir: /usr/src/app/backend    
+   command:  npm run start:prod
+   ports:
+       - 3000:3000
+     
+   networks:
+       - mongonetwork 
+   volumes:
+       - .:/usr/src/app
+       - /usr/src/app/backend/node_modules
+   restart: unless-stopped
+   depends_on:
+      - mongodb  
 volumes:
   appvol:
    external: true      
 networks:
   mongonetwork:
     name: mongonetwork     
+
+
 
 
    
