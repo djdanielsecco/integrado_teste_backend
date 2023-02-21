@@ -148,7 +148,7 @@ export class UniversityService {
       );
     }
   }
-  async update(id: string, params: {name: string,web_pages:string[],domais:string[]}) {
+  async update(id: string, params: {name:string,web_pages:string[],domais:string[]}) {
     try {
       const doc = await this.getById(id)
       try {
