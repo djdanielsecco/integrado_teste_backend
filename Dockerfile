@@ -21,6 +21,8 @@ RUN rm -rf node_modules
 
 # RUN npm install --only=production
 RUN npm i 
+
+###########################################
 FROM ubuntu:latest AS cli
 RUN apt-get update -y
 RUN apt-get upgrade -y 
@@ -39,13 +41,13 @@ ENV NODE_ENV=${NODE_ENV}
 
 # COPY . .
 WORKDIR /usr/src/app/backend
-COPY ./backend/. .
-RUN rm -rf node_modules
-# CMD ["/bin/bash"]
-# RUN npm install --only=production
-RUN npm i 
-ENTRYPOINT exec /bin/bash
-
+# COPY ./backend/. .
+# RUN rm -rf node_modules
+# # CMD ["/bin/bash"]
+# # RUN npm install --only=production
+# RUN npm i 
+# CMD  /bin/bash
+##################################################
 FROM ubuntu:latest as production
 RUN apt-get update -y
 RUN apt-get upgrade -y 

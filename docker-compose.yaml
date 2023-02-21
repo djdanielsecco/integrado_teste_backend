@@ -8,8 +8,7 @@ services:
   cli:
    container_name: nestjs_api_cli
    image: nestjs-api-cli:1.0.0
-   stdin_open: true 
-   tty: true
+#    command:  bash
    build:
        context: .
        target: cli
@@ -17,14 +16,16 @@ services:
 #    command:  bash
    ports:
        - 3000:3000
-     
+   stdin_open: true 
+   tty: true
+   entrypoint:  /bin/bash  
    networks:
        - mongonetwork 
    working_dir: /usr/src/app/backend   
    volumes:
     
       - ./:/usr/src/app
-      - /usr/src/app/backend/node_modules
+    #   - /usr/src/app/backend/node_modules
    restart: unless-stopped
    depends_on:
       - mongodb
