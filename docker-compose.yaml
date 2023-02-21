@@ -5,6 +5,29 @@ services:
       - '0.0.0.0:27017:27017'
     networks:
       - mongonetwork
+  cli:
+   container_name: nestjs_api_cli
+   image: nestjs-api-cli:1.0.0
+   stdin_open: true 
+   tty: true
+   build:
+       context: .
+       target: cli
+       dockerfile: ./Dockerfile
+#    command:  bash
+   ports:
+       - 3000:3000
+     
+   networks:
+       - mongonetwork 
+   working_dir: /usr/src/app/backend   
+   volumes:
+    
+      - ./:/usr/src/app
+      - /usr/src/app/backend/node_modules
+   restart: unless-stopped
+   depends_on:
+      - mongodb
   dev:
    container_name: nestjs_api_dev
    image: nestjs-api-dev:1.0.0
@@ -12,7 +35,9 @@ services:
        context: .
        target: development
        dockerfile: ./Dockerfile
-   working_dir: /usr/src/app/backend   
+   working_dir: /usr/src/app/backend  
+   stdin_open: true 
+   tty: true 
    command:  npm run start:debug
    ports:
        - 3000:3000
@@ -45,9 +70,11 @@ services:
    restart: unless-stopped
    depends_on:
       - mongodb  
-volumes:
-  appvol:
-   external: true      
+# volumes:
+#   appvol:
+#    external: true 
+     
+
 networks:
   mongonetwork:
     name: mongonetwork     

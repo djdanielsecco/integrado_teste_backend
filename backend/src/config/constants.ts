@@ -8,3 +8,4 @@ export const country = [
   'suriname',
   'uruguay',
 ];
+export const MONGODB_URI_DEV = 'mongodb://mongodb:27017/universities';

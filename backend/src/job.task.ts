@@ -16,13 +16,21 @@ export class JobService {
     public httpService: HttpService,
     @InjectModel(University.name)
     public universityModel: Model<UniversityDocument>,
-  ) {}
+  ) { }
   resolver = (cb: any, delay: any) =>
     new Promise((resolve) => setTimeout(() => resolve(cb), delay));
   start = async function () {
     try {
       for await (const i of country) {
-        console.log('i: ', i);
+
+        function unique(arr: any[]) {
+          return arr?.filter(
+            (
+              (set) => (f: any) =>
+                !(!set.has(f?.["state-province"]) && set.add(f?.["state-province"])) && (!set.has(f?.name) && set.add(f?.name))
+            )(new Set())
+          );
+        }
         const url = `http://universities.hipolabs.com/search?country=${i}`;
         await this.resolver(this.httpService.axiosRef.get(url), 1000).then(
           async (res: AxiosResponse) => {
@@ -34,14 +42,26 @@ export class JobService {
               `${i}`,
             );
             const exist = await COLLECTION.exists();
+            console.log('exist: ', exist);
             if (!exist) {
+
               await COLLECTION.createCollection();
-              await COLLECTION.insertMany(parse);
+              parse.length > 0 && await COLLECTION.insertMany(unique(parse))
+
             } else {
-              if (((await COLLECTION.countDocuments()) != parse.length) && parse.length > 0 ) {
-                for await (const x of parse) {
+              if (((await COLLECTION.countDocuments()) != parse.length) && parse.length > 0) {
+                for await (const x of unique(parse)) {
                   console.log('x: ', x);
-                  await COLLECTION.findOneAndUpdate({ name:x.name,country:x.country,"state-province":x["state-province"] }, x, {
+                  await COLLECTION.findOneAndUpdate({ name: x.name, country: x.country, "state-province": x?.["state-province"] ?? null }, {
+                    $set: {
+                      name: x?.name,
+                      country: x?.country,
+                      "state-province": x?.["state-province"] ?? null,
+                      alpha_two_code: x?.alpha_two_code,
+                      web_pages: x?.web_pages,
+                      domains: x?.domains
+                    }
+                  }, {
                     upsert: true,
                     strict: false,
                   });
@@ -55,8 +75,9 @@ export class JobService {
       console.log('error: ', error);
     }
   };
+  
   // executa a atualizacao todo dias as 23 horas
-  @Cron('0 0 23 * * *', {
+  @Cron('40 19 21 * * *', {
     name: 'Get Universities',
     timeZone: 'America/Sao_Paulo',
   })

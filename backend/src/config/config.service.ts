@@ -1,4 +1,5 @@
-const MONGODB_URI_DEV = 'mongodb://mongodb:27017/universities';
+import { MONGODB_URI_DEV } from './constants';
+
 export class ConfigService {
   public async getMongoConfig() {
     // console.log(this.get('MONGODB_URI'));

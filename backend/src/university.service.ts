@@ -1,6 +1,4 @@
-/*
-https://docs.nestjs.com/providers#services
-*/
+
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -9,7 +7,7 @@ import {
   University,
   UniversityDocument,
   UniversitySchema,
-} from './entities/UniversitySchema';
+} from './entities/UniversitySchema'; 
 import { ObjectId } from 'mongodb'
 @Injectable()
 export class UniversityService {
@@ -159,8 +157,8 @@ export class UniversityService {
     try {
       const doc = await this.getById(id)
       try {
-        let o_Id = new ObjectId(id)
-        let collection = doc.country.toLowerCase()
+        const o_Id = new ObjectId(id)
+        const collection = doc.country.toLowerCase()
         const COLLECTION = this.universityModel.db.model(
           'UpdateModel',
           UniversitySchema,
