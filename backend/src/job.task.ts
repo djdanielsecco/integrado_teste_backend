@@ -22,7 +22,6 @@ export class JobService {
   start = async function () {
     try {
       for await (const i of country) {
-
         function unique(arr: any[]) {
           return arr?.filter(
             (
@@ -35,23 +34,18 @@ export class JobService {
         await this.resolver(this.httpService.axiosRef.get(url), 1000).then(
           async (res: AxiosResponse) => {
             const parse: Array<any> = (await res?.data) ?? [];
-            console.log('parse: ', parse.length);
             const COLLECTION = this.universityModel.db.model(
               `${i}`,
               UniversitySchema,
               `${i}`,
             );
             const exist = await COLLECTION.exists();
-            console.log('exist: ', exist);
             if (!exist) {
-
               await COLLECTION.createCollection();
               parse.length > 0 && await COLLECTION.insertMany(unique(parse))
-
             } else {
               if (((await COLLECTION.countDocuments()) != parse.length) && parse.length > 0) {
                 for await (const x of unique(parse)) {
-                  console.log('x: ', x);
                   await COLLECTION.findOneAndUpdate({ name: x.name, country: x.country, "state-province": x?.["state-province"] ?? null }, {
                     $set: {
                       name: x?.name,
@@ -72,18 +66,14 @@ export class JobService {
         );
       }
     } catch (error) {
-      console.log('error: ', error);
     }
   };
-  
   // executa a atualizacao todo dias as 23 horas
-  @Cron('40 19 21 * * *', {
+  @Cron('0 59 23 * * *', {
     name: 'Get Universities',
     timeZone: 'America/Sao_Paulo',
   })
   async handleCron() {
-    console.log("vai rolar");
     await this.start();
-    console.log("rolou");
   }
 }

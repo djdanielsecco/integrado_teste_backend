@@ -1,18 +1,14 @@
-/*
-https://docs.nestjs.com/providers#services
-*/
-import * as bcrypt from 'bcryptjs';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
 import { Users, UsersDocument } from './entities/UsersSchema';
-
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(Users.name)
     public userModel: Model<UsersDocument>,
-  ) {}
+  ) { }
   async encrypt(key: string) {
     const saltRounds = 10;
     const hash = await bcrypt.hash(key, saltRounds);
@@ -46,13 +42,13 @@ export class UsersService {
       const user: UsersDocument = await this.userModel.findOne({
         email: `${email}`,
       });
-      console.log('user: ', user);
+      
       const Email: string = user?.email;
       const Password: string = user?.password;
       const Name: string = user?.name;
       const ID: string = user?._id.valueOf() as string;
       const verify = await this.compare(password, Password);
-      console.log('verify: ', verify);
+      
       if (!!verify) {
         return {
           Name,
@@ -74,19 +70,17 @@ export class UsersService {
       const user: UsersDocument = await this.userModel.findOne({
         email: `${email}`,
       });
-
       const Password: string = user?.password;
-
       const verify = await this.compare(password, Password);
       if (verify) {
-        console.log('verify: ', verify);
+        
         const keyCrypt = await this.encrypt(new_password);
         const doc = await this.userModel.findOneAndUpdate(
           { email: email },
           { password: keyCrypt },
           { new: true },
         );
-        console.log('doc: ', doc);
+        
         if (!!doc) {
           return { message: 'New password updated' };
         } else {
@@ -95,14 +89,13 @@ export class UsersService {
       } else {
         throw new Error('Wrong password');
       }
-    } catch(error) {
+    } catch (error) {
       throw new HttpException(
         { message: error.message, status: HttpStatus.NOT_ACCEPTABLE },
         HttpStatus.NOT_ACCEPTABLE,
       );
     }
   }
-
   async findById(id: string) {
     try {
       const doc = await this.userModel.findById(id);

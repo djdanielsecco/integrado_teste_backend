@@ -1,37 +1,25 @@
 import {
   Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Post,
-  Query,
-  Res,
-  Delete,
-  Put,
-  HttpException,
-  Param,
-  Type,
+  Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query,
+  Res
 } from '@nestjs/common';
+import { ApiBody, ApiHeader, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { Response } from 'express';
+import { University } from './entities/UniversitySchema';
 import { UniversityService } from './university.service';
 import { UsersService } from './users.service';
-import { Response } from 'express';
-import { University, UniversitySchema,UniversityDocument } from './entities/UniversitySchema';
-import { ApiParam,ApiBody,ApiQuery, getSchemaPath,ApiHeader, ApiBearerAuth } from '@nestjs/swagger';
 // export type RootState = ReturnType<typeof UniversityService.list>;
-import { ChangePass_Type, Create_Type, SearchQuery_Type, Update_Type} from'./config/types'
+import { ChangePass_Type, Create_Type, SearchQuery_Type, Update_Type } from './config/types';
 @ApiHeader({
   name: 'X-Authorization',
   description: 'Client _id for auth routes',
-  
 })
 @Controller('api')
 export class AppController {
   constructor(
     private readonly appService: UniversityService,
     private readonly userService: UsersService,
-
-  ) {}
-
+  ) { }
   @Put('/change_password')
   @ApiBody({ type: ChangePass_Type })
   async changePwd(
@@ -56,12 +44,12 @@ export class AppController {
   @ApiParam({
     name: 'id',
     required: true,
-    description: 'either an integer for the project id or a string for the project name', 
-    schema: { oneOf: [{type: 'string'}]},
-    type: 'string' 
+    description: 'either an integer for the project id or a string for the project name',
+    schema: { oneOf: [{ type: 'string' }] },
+    type: 'string'
   })
   async getById(@Param('id') id: string, @Res() res: Response) {
-    console.log('id1: ', id);
+    
     try {
       const resp = await this.appService.getById(id);
       return res.status(HttpStatus.ACCEPTED).json(resp);
@@ -105,13 +93,13 @@ export class AppController {
   @ApiParam({
     name: 'id',
     required: true,
-    description: 'either an integer for the project id or a string for the project name', 
-    schema: { oneOf: [{type: 'string'}]},
-    type: 'string' 
+    description: 'either an integer for the project id or a string for the project name',
+    schema: { oneOf: [{ type: 'string' }] },
+    type: 'string'
   })
   @ApiBody({ type: Update_Type })
-  async update(@Param('id') id: string,@Body() param: {name:string,web_pages:Array<string>,domais:Array<string>}, @Res() res: Response) {
-    console.log('id1: ', id);
+  async update(@Param('id') id: string, @Body() param: { name: string, web_pages: Array<string>, domais: Array<string> }, @Res() res: Response) {
+    
     try {
       const resp = await this.appService.update(id, param);
       return res.status(HttpStatus.ACCEPTED).json(resp);
@@ -126,9 +114,9 @@ export class AppController {
   @ApiParam({
     name: 'id',
     required: true,
-    description: 'Delete document', 
-    schema: { oneOf: [{type: 'string'}]},
-    type: 'string' 
+    description: 'Delete document',
+    schema: { oneOf: [{ type: 'string' }] },
+    type: 'string'
   })
   async delete(@Param('id') id: string, @Res() res: Response) {
     try {

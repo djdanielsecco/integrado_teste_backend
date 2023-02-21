@@ -2,17 +2,15 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  NestMiddleware,
+  NestMiddleware
 } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { UsersService } from './users.service';
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-  constructor(public service: UsersService) {}
+  constructor(public service: UsersService) { }
   async use(req: Request, res: Response, next: NextFunction) {
     const authorization = req.header('x-authorization');
-    console.log('req: ', req.headers);
-
     try {
       const valid = await this.service
         .findById(authorization)

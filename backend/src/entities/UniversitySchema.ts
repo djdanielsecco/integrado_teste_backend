@@ -1,18 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import {
-  HydratedDocument,
-  Document,
-  Schema as MongooseSchema,
-  Mixed,
-} from 'mongoose';
 import { ApiProperty } from "@nestjs/swagger";
+import {
+  HydratedDocument, Mixed, Schema as MongooseSchema
+} from 'mongoose';
 export type UniversityDocument = HydratedDocument<University>;
 @Schema({ timestamps: true, autoCreate: false })
 // @Schema({collection:"full_universities", timestamps: true,autoCreate:false })
 export class University {
-
-    @Prop({ type: MongooseSchema.Types.ObjectId})
-    _id: MongooseSchema.Types.ObjectId;
+  @Prop({ type: MongooseSchema.Types.ObjectId })
+  _id: MongooseSchema.Types.ObjectId;
   @ApiProperty()
   @Prop({ type: [String] })
   domains: string[];

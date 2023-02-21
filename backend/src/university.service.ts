@@ -1,14 +1,13 @@
-
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { country } from './config/constants';
 import {
   University,
   UniversityDocument,
-  UniversitySchema,
-} from './entities/UniversitySchema'; 
-import { ObjectId } from 'mongodb'
+  UniversitySchema
+} from './entities/UniversitySchema';
 @Injectable()
 export class UniversityService {
   /**
@@ -92,16 +91,12 @@ export class UniversityService {
         { $project: { "__v": 0 } },
         { $match: { $expr: { $eq: ['$_id', { $toObjectId: id }] } } },
       ]);
-      console.log('document: ', document);
-    if( !!document?.at(0)){
-      return  document.at(0)
-    }else{
-      throw new Error(`Not found document _id:${id}`);
-      
-    }
-      
+      if (!!document?.at(0)) {
+        return document.at(0)
+      } else {
+        throw new Error(`Not found document _id:${id}`);
+      }
     } catch (error) {
-
       throw new HttpException(
         { message: error.message, status: HttpStatus.NOT_FOUND },
         HttpStatus.NOT_FOUND,
@@ -115,7 +110,7 @@ export class UniversityService {
       }
       const newEntrie = {
         ...university,
-        country:university.country.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()),
+        country: university.country.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()),
         'state-province': university?.['state-province'] ?? null,
         alpha_two_code: university.alpha_two_code.toUpperCase(),
       };
@@ -164,14 +159,14 @@ export class UniversityService {
           UniversitySchema,
           collection,
         );
-       await COLLECTION.updateOne({_id:o_Id},{...params})
+        await COLLECTION.updateOne({ _id: o_Id }, { ...params })
       } catch (e) {
         throw new Error(e.message);
       }
       return { message: "document updated" }
     } catch (error) {
       throw new HttpException(
-        { message:error.message, status: HttpStatus.NOT_FOUND },
+        { message: error.message, status: HttpStatus.NOT_FOUND },
         HttpStatus.NOT_FOUND,
       );
     }

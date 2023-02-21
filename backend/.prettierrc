@@ -7,7 +7,7 @@
 	"singleQuote": true,
 	"requirePragma": true,
 	"insertPragma": true,
-	"bracketSpacing": false,
+	"bracketSpacing": true,
 	"bracketSameLine": false,
 	"singleAttributePerLine": true,
 	"endOfLine": "auto",

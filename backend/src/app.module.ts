@@ -1,18 +1,17 @@
+import { HttpModule } from '@nestjs/axios';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
+import { AppController } from './app.controller';
+import { AuthMiddleware } from './auth.middleware';
+import { ConfigModule } from './config/config.module';
+import { ConfigService } from './config/config.service';
+import { University, UniversitySchema } from './entities/UniversitySchema';
+import { Users, UsersSchema } from './entities/UsersSchema';
 import { JobService } from './job.task';
 import { NoAuthController } from './noauth.controller';
-import { UsersService } from './users.service';
-import { Users, UsersSchema } from './entities/UsersSchema';
-import { HttpModule } from '@nestjs/axios';
-import { ScheduleModule } from '@nestjs/schedule';
-import { ConfigModule } from './config/config.module';
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
-import { AppController } from './app.controller';
-
-import { ConfigService } from './config/config.service';
-import { MongooseModule } from '@nestjs/mongoose';
 import { UniversityService } from './university.service';
-import { University, UniversitySchema } from './entities/UniversitySchema';
-import { AuthMiddleware } from './auth.middleware';
+import { UsersService } from './users.service';
 @Module({
   imports: [
     University,
@@ -23,9 +22,9 @@ import { AuthMiddleware } from './auth.middleware';
         configService.getMongoConfig(),
     }),
     ConfigModule,
-          MongooseModule.forFeature([
+    MongooseModule.forFeature([
       { name: Users.name, schema: UsersSchema },
-      { name: University.name, schema: UniversitySchema},
+      { name: University.name, schema: UniversitySchema },
     ]),
     ScheduleModule.forRoot(),
     HttpModule.register({
@@ -41,7 +40,7 @@ import { AuthMiddleware } from './auth.middleware';
   providers: [
     JobService,
     University,
-           UniversityService,
+    UniversityService,
     UsersService,
     HttpModule,
   ],
