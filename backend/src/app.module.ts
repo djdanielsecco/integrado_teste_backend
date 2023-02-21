@@ -23,9 +23,9 @@ import { AuthMiddleware } from './auth.middleware';
         configService.getMongoConfig(),
     }),
     ConfigModule,
-    MongooseModule.forFeature([
+          MongooseModule.forFeature([
       { name: Users.name, schema: UsersSchema },
-      { name: University.name, schema: UniversitySchema },
+      { name: University.name, schema: UniversitySchema},
     ]),
     ScheduleModule.forRoot(),
     HttpModule.register({
@@ -41,7 +41,7 @@ import { AuthMiddleware } from './auth.middleware';
   providers: [
     JobService,
     University,
-    UniversityService,
+           UniversityService,
     UsersService,
     HttpModule,
   ],
