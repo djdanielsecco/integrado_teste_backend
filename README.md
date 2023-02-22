@@ -10,7 +10,7 @@
 |    4 | Caso acessar $>  `docker compose exec -it dev  bash`        |
 |    5 | Iniciar o banco $>  `docker compose exec dev npm run create_database`        |
 |    6 | Stop: $>  `docker compose down`        |
-<br/>
+
 ## <b> Install Production</b>
 
 
@@ -24,7 +24,7 @@
 |    6 | Logs $>  `docker compose exec -it prod  pm2 monit`        |
 |    7 |Stop: $>  `docker compose down`  
   
-<br/>
+<br>
 
 ##  <div><p> <img align="center" alt="djdanielsecco-Vscode" height="20" width="" src="https://avatars.githubusercontent.com/u/7658037?s=200&v=4">   <b> Documentação: </b></p></div>
 
