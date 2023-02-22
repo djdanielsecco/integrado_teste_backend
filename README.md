@@ -4,25 +4,25 @@
 
 | Nº | Step  |
 | ---: | ---------- |
-|    1 | ```Clonar o repositório ```|
-|    2 | $>   ```   docker compose up -d dev```   |
-|    3 | Caso nescessário: $>  ```docker compose exec dev npm install```        |
-|    4 | Caso acessar $>  ```docker compose exec -it dev  bash```        |
-|    5 | Iniciar o banco $>  ```docker compose exec dev npm run create_database```        |
-|    6 | Stop: $>  ```docker compose down```        |
+|    1 | `Clonar o repositório `|
+|    2 | $>   `   docker compose up -d dev`   |
+|    3 | Caso nescessário: $>  `docker compose exec dev npm install`        |
+|    4 | Caso acessar $>  `docker compose exec -it dev  bash`        |
+|    5 | Iniciar o banco $>  `docker compose exec dev npm run create_database`        |
+|    6 | Stop: $>  `docker compose down`        |
 <br>
 ## <b> Install Production
 
 
 | Nº | Step  |
 | ---: | ---------- |
-|    1 | ```Clonar o repositório ```|
-|    2 | $>   ```docker compose config -o deploy-compose.yaml prod```   |
-|    3 | $>  ```docker compose -f deploy-compose.yaml up ```        |
-|    4 | Caso nescessário $>  ```docker compose exec prod npm run create_database```        |
-|    5 | Caso acessar $>  ```docker compose exec -it prod  bash```        |
-|    6 | Logs $>  ```docker compose exec -it prod  pm2 monit```        |
-|    7 |Stop: $>  ```docker compose down```  
+|    1 | `Clonar o repositório `|
+|    2 | $>   `docker compose config -o deploy-compose.yaml prod`   |
+|    3 | $>  `docker compose -f deploy-compose.yaml up `        |
+|    4 | Caso nescessário $>  `docker compose exec prod npm run create_database`        |
+|    5 | Caso acessar $>  `docker compose exec -it prod  bash`        |
+|    6 | Logs $>  `docker compose exec -it prod  pm2 monit`        |
+|    7 |Stop: $>  `docker compose down`  
   
 <br>
 
