@@ -1,5 +1,5 @@
 # Integrado_teste_backend
-## <b> Install Develop
+## <b> Install Develop </b>
 
 
 | Nº | Step  |
@@ -11,7 +11,7 @@
 |    5 | Iniciar o banco $>  `docker compose exec dev npm run create_database`        |
 |    6 | Stop: $>  `docker compose down`        |
 <br>
-## <b> Install Production
+## <b> Install Production</b>
 
 
 | Nº | Step  |
