@@ -8,29 +8,26 @@ services:
   dev:
    container_name: nestjs_api_dev
    image: nestjs-api-dev:1.0.0
-#    command:  bash
    build:
        context: .
        target: development
        dockerfile: ./Dockerfile
-#    command:  bash
+   working_dir: /usr/src/app/backend  
+   stdin_open: true 
+   tty: true 
+   command: /bin/bash 
    ports:
        - 3000:3000
-   stdin_open: true 
-   tty: true
-   entrypoint:  /bin/bash  
    networks:
        - mongonetwork 
-   working_dir: /usr/src/app/backend   
    volumes:
-      - ./:/usr/src/app
-    #   - /usr/src/app/backend/node_modules
+       - .:/usr/src/app
    restart: unless-stopped
    depends_on:
       - mongodb
   builder:
    container_name: nestjs_api_build
-   image: nestjs-api-build:1.0.0
+   image: nestjs-api-build:latest
    build:
        context: .
        target: builder
@@ -51,7 +48,7 @@ services:
       - mongodb
   prod:
    container_name: nestjs_api_prod
-   image: nestjs-api-prod:1.0.0
+   image: nestjs-api-prod:latest
    build:
        context: .
        target: production
@@ -64,15 +61,12 @@ services:
        - 3000:3000
    networks:
        - mongonetwork 
-   volumes:
-       - .:/usr/src/app
-    #    - /usr/src/app/backend/node_modules
    restart: unless-stopped
    depends_on:
       - mongodb  
-# volumes:
-#   appvol:
-#    external: true 
 networks:
   mongonetwork:
     name: mongonetwork     
+volumes:
+    dev-vol:
+        external: true
