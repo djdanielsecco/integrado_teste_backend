@@ -5,7 +5,7 @@
 | Nº | Step  |
 | ---: | ---------- |
 |    1 | `Clonar o repositório `|
-|    2 | $>   `   docker compose up -d dev`   |
+|    2 | $>   `docker compose up -d dev`   |
 |    3 | Caso nescessário: $>  `docker compose exec dev npm install`        |
 |    4 | Caso acessar $>  `docker compose exec -it dev  bash`        |
 |    5 | Iniciar o banco $>  `docker compose exec dev npm run create_database`        |
